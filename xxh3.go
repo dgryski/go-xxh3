@@ -92,8 +92,8 @@ func XXH3_len_9to16_64b(data []byte, seed uint64) uint64 {
 	var key64 []uint64 = asUint64s(kKey)
 
 	acc := PRIME64_1 * (uint64(len(data)) + seed)
-	ll1 := XXH_readLE64(data) + XXH3_readKey64(key64[0:])
-	ll2 := XXH_readLE64(data[len(data)-8:]) + XXH3_readKey64(key64[1:])
+	ll1 := XXH_readLE64(data) + key64[0]
+	ll2 := XXH_readLE64(data[len(data)-8:]) + key64[1]
 	acc += XXH3_mul128(ll1, ll2)
 	return XXH3_avalanche(acc)
 }
@@ -181,14 +181,14 @@ func XXH3_mix16B(data []byte, key []uint32) uint64 {
 
 	return XXH3_mul128(
 		XXH_readLE64(data)^XXH3_readKey64(key64),
-		XXH_readLE64(data[8:])^XXH3_readKey64(key64[1:]))
+		XXH_readLE64(data[8:])^key64[1])
 }
 
 func XXH3_mix2Accs(acc []uint64, key []uint32) uint64 {
 	key64 := asUint64s(key)
 	return XXH3_mul128(
 		acc[0]^XXH3_readKey64(key64),
-		acc[1]^XXH3_readKey64(key64[1:]))
+		acc[1]^key64[1])
 }
 
 func XXH3_mergeAccs(acc []uint64, key []uint32, start uint64) uint64 {
