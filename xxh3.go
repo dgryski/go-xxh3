@@ -112,28 +112,145 @@ func XXH3_accumulate_512(acc []uint64, data []byte, key []uint32) {
 	xacc := acc
 	xkey := key
 
-	for i := 0; i < ACC_NB; i++ {
-		left := 2 * i
-		right := 2*i + 1
-		dataLeft := binary.LittleEndian.Uint32(data[4*left : 4*left+4])
-		dataRight := binary.LittleEndian.Uint32(data[4*right : 4*right+4])
-		xacc[i] += XXH_mult32to64(dataLeft+xkey[left], uint64(dataRight+xkey[right]))
-		xacc[i] += uint64(dataLeft) + (uint64(dataRight) << 32)
-	}
+	var left, right int
+	var dataLeft, dataRight uint32
+
+	_ = xacc[7]
+	_ = data[63]
+	_ = xkey[15]
+
+	left, right = 0, 1
+	dataLeft = binary.LittleEndian.Uint32(data[4*left : 4*left+4])
+	dataRight = binary.LittleEndian.Uint32(data[4*right : 4*right+4])
+	xacc[0] += XXH_mult32to64(dataLeft+xkey[left], uint64(dataRight+xkey[right]))
+	xacc[0] += uint64(dataLeft) + (uint64(dataRight) << 32)
+
+	left, right = 2, 3
+	dataLeft = binary.LittleEndian.Uint32(data[4*left : 4*left+4])
+	dataRight = binary.LittleEndian.Uint32(data[4*right : 4*right+4])
+	xacc[1] += XXH_mult32to64(dataLeft+xkey[left], uint64(dataRight+xkey[right]))
+	xacc[1] += uint64(dataLeft) + (uint64(dataRight) << 32)
+
+	left, right = 4, 5
+	dataLeft = binary.LittleEndian.Uint32(data[4*left : 4*left+4])
+	dataRight = binary.LittleEndian.Uint32(data[4*right : 4*right+4])
+	xacc[2] += XXH_mult32to64(dataLeft+xkey[left], uint64(dataRight+xkey[right]))
+	xacc[2] += uint64(dataLeft) + (uint64(dataRight) << 32)
+
+	left, right = 6, 7
+	dataLeft = binary.LittleEndian.Uint32(data[4*left : 4*left+4])
+	dataRight = binary.LittleEndian.Uint32(data[4*right : 4*right+4])
+	xacc[3] += XXH_mult32to64(dataLeft+xkey[left], uint64(dataRight+xkey[right]))
+	xacc[3] += uint64(dataLeft) + (uint64(dataRight) << 32)
+
+	left, right = 8, 9
+	dataLeft = binary.LittleEndian.Uint32(data[4*left : 4*left+4])
+	dataRight = binary.LittleEndian.Uint32(data[4*right : 4*right+4])
+	xacc[4] += XXH_mult32to64(dataLeft+xkey[left], uint64(dataRight+xkey[right]))
+	xacc[4] += uint64(dataLeft) + (uint64(dataRight) << 32)
+
+	left, right = 10, 11
+	dataLeft = binary.LittleEndian.Uint32(data[4*left : 4*left+4])
+	dataRight = binary.LittleEndian.Uint32(data[4*right : 4*right+4])
+	xacc[5] += XXH_mult32to64(dataLeft+xkey[left], uint64(dataRight+xkey[right]))
+	xacc[5] += uint64(dataLeft) + (uint64(dataRight) << 32)
+
+	left, right = 12, 13
+	dataLeft = binary.LittleEndian.Uint32(data[4*left : 4*left+4])
+	dataRight = binary.LittleEndian.Uint32(data[4*right : 4*right+4])
+	xacc[6] += XXH_mult32to64(dataLeft+xkey[left], uint64(dataRight+xkey[right]))
+	xacc[6] += uint64(dataLeft) + (uint64(dataRight) << 32)
+
+	left, right = 14, 15
+	dataLeft = binary.LittleEndian.Uint32(data[4*left : 4*left+4])
+	dataRight = binary.LittleEndian.Uint32(data[4*right : 4*right+4])
+	xacc[7] += XXH_mult32to64(dataLeft+xkey[left], uint64(dataRight+xkey[right]))
+	xacc[7] += uint64(dataLeft) + (uint64(dataRight) << 32)
 }
 
 func XXH3_scrambleAcc(acc []uint64, key []uint32) {
 	xacc := acc
 	xkey := key
 
-	for i := 0; i < ACC_NB; i++ {
-		left := 2 * i
-		right := 2*i + 1
-		xacc[i] ^= xacc[i] >> 47
-		p1 := XXH_mult32to64(uint32(xacc[i]), uint64(xkey[left]))
-		p2 := XXH_mult32to64(uint32(xacc[i]>>32), uint64(xkey[right]))
-		xacc[i] = p1 ^ p2
-	}
+	var left, right int
+	var p1, p2 uint64
+
+	_ = xacc[7]
+	_ = xkey[15]
+
+	left, right = 0, 1
+	xacc[0] ^= xacc[0] >> 47
+	p1 = XXH_mult32to64(uint32(xacc[0]), uint64(xkey[left]))
+	p2 = XXH_mult32to64(uint32(xacc[0]>>32), uint64(xkey[right]))
+	xacc[0] = p1 ^ p2
+
+	left, right = 2, 3
+	xacc[1] ^= xacc[1] >> 47
+	p1 = XXH_mult32to64(uint32(xacc[1]), uint64(xkey[left]))
+	p2 = XXH_mult32to64(uint32(xacc[1]>>32), uint64(xkey[right]))
+	xacc[1] = p1 ^ p2
+
+	left, right = 4, 5
+	xacc[2] ^= xacc[2] >> 47
+	p1 = XXH_mult32to64(uint32(xacc[2]), uint64(xkey[left]))
+	p2 = XXH_mult32to64(uint32(xacc[2]>>32), uint64(xkey[right]))
+	xacc[2] = p1 ^ p2
+
+	left, right = 6, 7
+	xacc[3] ^= xacc[3] >> 47
+	p1 = XXH_mult32to64(uint32(xacc[3]), uint64(xkey[left]))
+	p2 = XXH_mult32to64(uint32(xacc[3]>>32), uint64(xkey[right]))
+	xacc[3] = p1 ^ p2
+
+	left, right = 8, 9
+	xacc[4] ^= xacc[4] >> 47
+	p1 = XXH_mult32to64(uint32(xacc[4]), uint64(xkey[left]))
+	p2 = XXH_mult32to64(uint32(xacc[4]>>32), uint64(xkey[right]))
+	xacc[4] = p1 ^ p2
+
+	left, right = 10, 11
+	xacc[5] ^= xacc[5] >> 47
+	p1 = XXH_mult32to64(uint32(xacc[5]), uint64(xkey[left]))
+	p2 = XXH_mult32to64(uint32(xacc[5]>>32), uint64(xkey[right]))
+	xacc[5] = p1 ^ p2
+
+	left, right = 12, 13
+	xacc[6] ^= xacc[6] >> 47
+	p1 = XXH_mult32to64(uint32(xacc[6]), uint64(xkey[left]))
+	p2 = XXH_mult32to64(uint32(xacc[6]>>32), uint64(xkey[right]))
+	xacc[6] = p1 ^ p2
+
+	left, right = 14, 15
+	xacc[7] ^= xacc[7] >> 47
+	p1 = XXH_mult32to64(uint32(xacc[7]), uint64(xkey[left]))
+	p2 = XXH_mult32to64(uint32(xacc[7]>>32), uint64(xkey[right]))
+	xacc[7] = p1 ^ p2
+
+}
+
+func XXH3_accumulate_full(acc []uint64, data []byte, key []uint32, nbStripes int) {
+	_ = key[31]
+	_ = data[15*STRIPE_LEN:]
+
+	XXH3_accumulate_512(acc, data[0*STRIPE_LEN:], key[0:])
+	XXH3_accumulate_512(acc, data[1*STRIPE_LEN:], key[2:])
+	XXH3_accumulate_512(acc, data[2*STRIPE_LEN:], key[4:])
+	XXH3_accumulate_512(acc, data[3*STRIPE_LEN:], key[6:])
+
+	XXH3_accumulate_512(acc, data[4*STRIPE_LEN:], key[8:])
+	XXH3_accumulate_512(acc, data[5*STRIPE_LEN:], key[10:])
+	XXH3_accumulate_512(acc, data[6*STRIPE_LEN:], key[12:])
+	XXH3_accumulate_512(acc, data[7*STRIPE_LEN:], key[14:])
+
+	XXH3_accumulate_512(acc, data[8*STRIPE_LEN:], key[16:])
+	XXH3_accumulate_512(acc, data[9*STRIPE_LEN:], key[18:])
+	XXH3_accumulate_512(acc, data[10*STRIPE_LEN:], key[20:])
+	XXH3_accumulate_512(acc, data[11*STRIPE_LEN:], key[22:])
+
+	XXH3_accumulate_512(acc, data[12*STRIPE_LEN:], key[24:])
+	XXH3_accumulate_512(acc, data[13*STRIPE_LEN:], key[26:])
+	XXH3_accumulate_512(acc, data[14*STRIPE_LEN:], key[28:])
+	XXH3_accumulate_512(acc, data[15*STRIPE_LEN:], key[30:])
 }
 
 func XXH3_accumulate(acc []uint64, data []byte, key []uint32, nbStripes int) {
@@ -151,7 +268,7 @@ func XXH3_hashLong(acc []uint64, data []byte) {
 	nb_blocks := len(data) / block_len
 
 	for n := 0; n < nb_blocks; n++ {
-		XXH3_accumulate(acc, data[n*block_len:], kKey[:], NB_KEYS)
+		XXH3_accumulate_full(acc, data[n*block_len:], kKey[:], NB_KEYS)
 		XXH3_scrambleAcc(acc, kKey[KEYSET_DEFAULT_SIZE-STRIPE_ELTS:])
 	}
 
