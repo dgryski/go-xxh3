@@ -92,14 +92,13 @@ func XXH3_len_9to16_64b(data []byte, seed uint64) uint64 {
 }
 
 func XXH3_len_0to16_64b(data []byte, seed uint64) uint64 {
-	len := len(data)
-	if len > 8 {
+	if len(data) > 8 {
 		return XXH3_len_9to16_64b(data, seed)
 	}
-	if len >= 4 {
+	if len(data) >= 4 {
 		return XXH3_len_4to8_64b(data, seed)
 	}
-	if len > 0 {
+	if len(data) > 0 {
 		return XXH3_len_1to3_64b(data, seed)
 	}
 	return seed
