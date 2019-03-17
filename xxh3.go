@@ -35,13 +35,6 @@ func asUint64s(k []uint32) []uint64 {
 	return *(*[]uint64)(unsafe.Pointer(&hdr))
 }
 
-func asUint32s(k []byte) []uint32 {
-	hdr := *(*reflect.SliceHeader)(unsafe.Pointer(&k))
-	// was byte, now uint32
-	hdr.Len, hdr.Cap = hdr.Len/4, hdr.Cap/4
-	return *(*[]uint32)(unsafe.Pointer(&hdr))
-}
-
 func XXH3_mul128(ll1, ll2 uint64) uint64 {
 	hi, lo := bits.Mul64(ll1, ll2)
 	return hi + lo
