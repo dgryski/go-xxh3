@@ -48,7 +48,6 @@ const (
 	PRIME64_5 = 2870177450012600261  // 0b0010011111010100111010110010111100010110010101100110011111000101
 )
 
-func XXH_readLE32(ptr []byte) uint32 { return binary.LittleEndian.Uint32(ptr) }
 func XXH_readLE64(ptr []byte) uint64 { return binary.LittleEndian.Uint64(ptr) }
 
 func XXH3_avalanche(h64 uint64) uint64 {
@@ -71,10 +70,9 @@ func XXH3_len_1to3_64b(data []byte, seed uint64) uint64 {
 
 func XXH3_len_4to8_64b(data []byte, seed uint64) uint64 {
 	key32 := kKey
-
 	acc := PRIME64_1 * (uint64(len(data)) + seed)
-	l1 := XXH_readLE32(data) + key32[0]
-	l2 := XXH_readLE32(data[len(data)-4:]) + key32[1]
+	l1 := binary.LittleEndian.Uint32(data[0:4]) + key32[0]
+	l2 := binary.LittleEndian.Uint32(data[len(data)-4:len(data)-4+4]) + key32[1]
 	acc += XXH_mult32to64(l1, uint64(l2))
 	return XXH3_avalanche(acc)
 }
@@ -117,8 +115,8 @@ func XXH3_accumulate_512(acc []uint64, data []byte, key []uint32) {
 	for i := 0; i < ACC_NB; i++ {
 		left := 2 * i
 		right := 2*i + 1
-		dataLeft := XXH_readLE32(data[4*left:])
-		dataRight := XXH_readLE32(data[4*right:])
+		dataLeft := binary.LittleEndian.Uint32(data[4*left : 4*left+4])
+		dataRight := binary.LittleEndian.Uint32(data[4*right : 4*right+4])
 		xacc[i] += XXH_mult32to64(dataLeft+xkey[left], uint64(dataRight+xkey[right]))
 		xacc[i] += uint64(dataLeft) + (uint64(dataRight) << 32)
 	}
